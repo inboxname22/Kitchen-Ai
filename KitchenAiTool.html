@@ -1,0 +1,3959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Kitchen AI Restaurant OS</title>
+
+    <style>
+        :root {
+            --primary: #f97316;
+            --primary-dark: #ea580c;
+            --primary-soft: #fff7ed;
+
+            --dark: #171717;
+            --dark-soft: #262626;
+
+            --background: #f6f7f9;
+            --surface: #ffffff;
+            --surface-soft: #fafafa;
+
+            --text: #171717;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+
+            --success: #16a34a;
+            --success-soft: #dcfce7;
+
+            --warning: #f59e0b;
+            --warning-soft: #fef3c7;
+
+            --danger: #dc2626;
+            --danger-soft: #fee2e2;
+
+            --info: #2563eb;
+            --info-soft: #dbeafe;
+
+            --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.06);
+            --shadow-md: 0 12px 32px rgba(15, 23, 42, 0.10);
+            --shadow-lg: 0 24px 60px rgba(15, 23, 42, 0.16);
+
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            background: var(--background);
+            color: var(--text);
+        }
+
+        button,
+        input,
+        select,
+        textarea {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* =====================================================
+           DEMO NAVIGATION
+        ===================================================== */
+
+        .demo-navigation {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+
+            padding: 14px 24px;
+            color: #ffffff;
+            background: rgba(23, 23, 23, 0.96);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .demo-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 230px;
+        }
+
+        .demo-logo {
+            width: 42px;
+            height: 42px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 13px;
+            font-size: 22px;
+            background: var(--primary);
+        }
+
+        .demo-brand h1 {
+            font-size: 16px;
+            line-height: 1.2;
+        }
+
+        .demo-brand p {
+            margin-top: 3px;
+            color: #a3a3a3;
+            font-size: 12px;
+        }
+
+        .screen-tabs {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .screen-tab {
+            border: 1px solid #404040;
+            background: #262626;
+            color: #d4d4d4;
+
+            padding: 10px 18px;
+            border-radius: 999px;
+
+            transition: 0.2s ease;
+        }
+
+        .screen-tab:hover {
+            color: #ffffff;
+            border-color: #737373;
+        }
+
+        .screen-tab.active {
+            color: #ffffff;
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .demo-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            min-width: 150px;
+            justify-content: flex-end;
+
+            color: #d4d4d4;
+            font-size: 13px;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 0 5px rgba(34, 197, 94, 0.14);
+        }
+
+        .app-screen {
+            min-height: calc(100vh - 71px);
+        }
+
+        /* =====================================================
+           SHARED COMPONENTS
+        ===================================================== */
+
+        .primary-button {
+            border: 0;
+            color: #ffffff;
+            background: var(--primary);
+
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-weight: 750;
+
+            transition: 0.2s ease;
+        }
+
+        .primary-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .outline-button {
+            border: 1px solid var(--border);
+            color: var(--text);
+            background: #ffffff;
+
+            padding: 11px 16px;
+            border-radius: 12px;
+            font-weight: 700;
+        }
+
+        .outline-button:hover {
+            background: #f9fafb;
+        }
+
+        .small-button {
+            border: 0;
+            padding: 8px 12px;
+            border-radius: 9px;
+            font-weight: 750;
+        }
+
+        .icon-button {
+            width: 42px;
+            height: 42px;
+
+            display: grid;
+            place-items: center;
+
+            border: 1px solid var(--border);
+            background: #ffffff;
+            border-radius: 12px;
+            font-size: 18px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+
+            padding: 6px 9px;
+            border-radius: 999px;
+
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .status-success {
+            color: #166534;
+            background: var(--success-soft);
+        }
+
+        .status-warning {
+            color: #92400e;
+            background: var(--warning-soft);
+        }
+
+        .status-danger {
+            color: #991b1b;
+            background: var(--danger-soft);
+        }
+
+        .status-info {
+            color: #1e40af;
+            background: var(--info-soft);
+        }
+
+        /* =====================================================
+           CUSTOMER MOBILE APP
+        ===================================================== */
+
+        .customer-background {
+            min-height: calc(100vh - 71px);
+            padding: 28px;
+
+            display: flex;
+            justify-content: center;
+
+            background:
+                radial-gradient(circle at top left, #ffedd5, transparent 34%),
+                linear-gradient(135deg, #fffaf5, #f3f4f6);
+        }
+
+        .phone-frame {
+            position: relative;
+
+            width: min(100%, 430px);
+            min-height: 840px;
+
+            overflow: hidden;
+            background: #ffffff;
+
+            border: 9px solid #171717;
+            border-radius: 42px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .phone-notch {
+            position: absolute;
+            z-index: 20;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+
+            width: 120px;
+            height: 27px;
+            border-radius: 999px;
+            background: #171717;
+        }
+
+        .customer-content {
+            height: 822px;
+            overflow-y: auto;
+            padding-bottom: 155px;
+            scrollbar-width: none;
+        }
+
+        .customer-content::-webkit-scrollbar {
+            display: none;
+        }
+
+        .customer-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+
+            padding: 45px 18px 14px;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .restaurant-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .restaurant-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .restaurant-icon {
+            width: 44px;
+            height: 44px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 14px;
+            font-size: 23px;
+            background: var(--primary-soft);
+        }
+
+        .restaurant-info h2 {
+            font-size: 17px;
+        }
+
+        .restaurant-info p {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 3px;
+        }
+
+        .table-badge {
+            text-align: right;
+        }
+
+        .table-badge strong {
+            display: block;
+            font-size: 13px;
+        }
+
+        .table-badge span {
+            color: var(--success);
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .search-row {
+            display: grid;
+            grid-template-columns: 1fr 46px;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            padding: 0 14px;
+            background: #f3f4f6;
+            border-radius: 14px;
+        }
+
+        .search-box input {
+            width: 100%;
+            border: 0;
+            outline: 0;
+            background: transparent;
+            padding: 13px 0;
+        }
+
+        .voice-search-button {
+            border: 0;
+            color: #ffffff;
+            background: var(--primary);
+            border-radius: 14px;
+            font-size: 20px;
+        }
+
+        .category-strip {
+            position: sticky;
+            top: 135px;
+            z-index: 9;
+
+            display: flex;
+            gap: 8px;
+
+            overflow-x: auto;
+            padding: 12px 16px;
+
+            background: #ffffff;
+            border-bottom: 1px solid #f3f4f6;
+            scrollbar-width: none;
+        }
+
+        .category-strip::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-chip {
+            flex: 0 0 auto;
+
+            border: 1px solid var(--border);
+            background: #ffffff;
+            color: #525252;
+
+            padding: 9px 13px;
+            border-radius: 999px;
+
+            font-size: 12px;
+            font-weight: 750;
+        }
+
+        .category-chip.active {
+            color: #ffffff;
+            border-color: var(--dark);
+            background: var(--dark);
+        }
+
+        .ai-hero {
+            margin: 14px 16px;
+            padding: 18px;
+
+            color: #ffffff;
+            background:
+                linear-gradient(135deg, rgba(249, 115, 22, 0.98), rgba(194, 65, 12, 0.98));
+
+            border-radius: 22px;
+            box-shadow: 0 14px 30px rgba(249, 115, 22, 0.24);
+        }
+
+        .ai-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            font-size: 12px;
+            font-weight: 850;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+        }
+
+        .ai-hero h3 {
+            margin-top: 12px;
+            font-size: 21px;
+            line-height: 1.25;
+        }
+
+        .ai-hero p {
+            margin-top: 8px;
+            color: #ffedd5;
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        .ai-prompt-button {
+            width: 100%;
+
+            margin-top: 14px;
+            padding: 11px 13px;
+
+            text-align: left;
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.16);
+
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 13px;
+        }
+
+        .menu-section {
+            padding: 4px 16px 20px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin: 14px 0;
+        }
+
+        .section-title h3 {
+            font-size: 18px;
+        }
+
+        .section-title button {
+            border: 0;
+            color: var(--primary-dark);
+            background: transparent;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .food-card {
+            overflow: hidden;
+            background: #ffffff;
+            border: 1px solid #eceff3;
+            border-radius: 18px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .food-image {
+            position: relative;
+            height: 122px;
+            overflow: hidden;
+        }
+
+        .food-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.35s ease;
+        }
+
+        .food-card:hover .food-image img {
+            transform: scale(1.06);
+        }
+
+        .food-rating {
+            position: absolute;
+            right: 8px;
+            bottom: 8px;
+
+            padding: 5px 8px;
+            border-radius: 999px;
+
+            color: #ffffff;
+            background: rgba(23, 23, 23, 0.78);
+
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .food-card-body {
+            padding: 12px;
+        }
+
+        .food-name-line {
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        .food-name-line h4 {
+            font-size: 13px;
+            line-height: 1.3;
+        }
+
+        .veg-icon {
+            flex: 0 0 auto;
+
+            width: 16px;
+            height: 16px;
+
+            display: grid;
+            place-items: center;
+
+            border: 1.5px solid var(--success);
+        }
+
+        .veg-icon::after {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--success);
+        }
+
+        .food-description {
+            min-height: 34px;
+            margin-top: 6px;
+
+            color: var(--muted);
+            font-size: 10px;
+            line-height: 1.4;
+        }
+
+        .food-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-top: 9px;
+        }
+
+        .food-price {
+            font-size: 15px;
+            font-weight: 850;
+        }
+
+        .spice {
+            font-size: 11px;
+        }
+
+        .food-actions {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 7px;
+            margin-top: 11px;
+        }
+
+        .customize-button {
+            border: 0;
+            background: #f3f4f6;
+
+            border-radius: 9px;
+            font-size: 10px;
+            font-weight: 750;
+        }
+
+        .add-button {
+            border: 1px solid #fdba74;
+            color: var(--primary-dark);
+            background: var(--primary-soft);
+
+            padding: 8px 10px;
+            border-radius: 9px;
+
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            color: #ffffff;
+            background: var(--primary);
+            padding: 7px 9px;
+            border-radius: 9px;
+
+            font-size: 11px;
+            font-weight: 850;
+        }
+
+        .ai-float-bar {
+            position: absolute;
+            z-index: 30;
+            left: 16px;
+            right: 16px;
+            bottom: 75px;
+
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            padding: 11px;
+            background: #171717;
+            border-radius: 17px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .ai-mic {
+            width: 42px;
+            height: 42px;
+            flex: 0 0 auto;
+
+            border: 0;
+            border-radius: 13px;
+
+            color: #ffffff;
+            background: var(--primary);
+            font-size: 19px;
+        }
+
+        .ai-float-copy {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .ai-float-copy strong {
+            display: block;
+            color: #ffffff;
+            font-size: 12px;
+        }
+
+        .ai-float-copy span {
+            display: block;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+
+            margin-top: 3px;
+            color: #a3a3a3;
+            font-size: 10px;
+        }
+
+        .ai-chat-icon {
+            color: #ffffff;
+            font-size: 18px;
+        }
+
+        .cart-bar {
+            position: absolute;
+            z-index: 35;
+            left: 16px;
+            right: 16px;
+            bottom: 14px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 13px 16px;
+            color: #ffffff;
+            background: var(--primary);
+
+            border-radius: 17px;
+            box-shadow: 0 14px 34px rgba(249, 115, 22, 0.36);
+        }
+
+        .cart-bar button {
+            border: 0;
+            color: #ffffff;
+            background: transparent;
+            font-weight: 850;
+        }
+
+        .cart-summary strong {
+            display: block;
+            font-size: 13px;
+        }
+
+        .cart-summary span {
+            font-size: 11px;
+            color: #ffedd5;
+        }
+
+        /* =====================================================
+           KITCHEN DISPLAY SYSTEM
+        ===================================================== */
+
+        .kds-screen {
+            min-height: calc(100vh - 71px);
+            color: #f5f5f5;
+            background: #111315;
+        }
+
+        .kds-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+
+            padding: 20px 26px;
+            border-bottom: 1px solid #2c3035;
+        }
+
+        .kds-title h2 {
+            font-size: 23px;
+        }
+
+        .kds-title p {
+            margin-top: 5px;
+            color: #9ca3af;
+            font-size: 12px;
+        }
+
+        .kds-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .dark-button {
+            border: 1px solid #3f3f46;
+            color: #e5e7eb;
+            background: #23262a;
+
+            padding: 10px 13px;
+            border-radius: 11px;
+        }
+
+        .kds-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+
+            padding: 18px 26px;
+        }
+
+        .kds-stat {
+            padding: 16px;
+            background: #1a1d21;
+            border: 1px solid #2c3035;
+            border-radius: 15px;
+        }
+
+        .kds-stat span {
+            color: #9ca3af;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+        }
+
+        .kds-stat strong {
+            display: block;
+            margin-top: 7px;
+            font-size: 23px;
+        }
+
+        .kds-layout {
+            display: grid;
+            grid-template-columns: 1fr 275px;
+            gap: 16px;
+
+            padding: 0 26px 26px;
+        }
+
+        .kanban-board {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(250px, 1fr));
+            gap: 14px;
+            overflow-x: auto;
+        }
+
+        .kanban-column {
+            min-height: 580px;
+            padding: 12px;
+
+            background: #17191d;
+            border: 1px solid #2c3035;
+            border-radius: 18px;
+        }
+
+        .kanban-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 7px 4px 14px;
+        }
+
+        .kanban-heading h3 {
+            font-size: 14px;
+        }
+
+        .kanban-count {
+            min-width: 25px;
+            height: 25px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 8px;
+            background: #2c3035;
+
+            font-size: 11px;
+            font-weight: 850;
+        }
+
+        .order-card {
+            margin-bottom: 12px;
+            padding: 15px;
+
+            color: #171717;
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .order-card.new-order {
+            border-top: 5px solid var(--warning);
+            animation: newOrderGlow 2s infinite;
+        }
+
+        .order-card.preparing-order {
+            border-top: 5px solid var(--info);
+        }
+
+        .order-card.ready-order {
+            border-top: 5px solid var(--success);
+        }
+
+        @keyframes newOrderGlow {
+            0%, 100% {
+                box-shadow: 0 0 0 rgba(245, 158, 11, 0);
+            }
+
+            50% {
+                box-shadow: 0 0 22px rgba(245, 158, 11, 0.28);
+            }
+        }
+
+        .order-card-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .order-number {
+            font-size: 20px;
+            font-weight: 950;
+        }
+
+        .order-table {
+            margin-top: 4px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .order-timer {
+            text-align: right;
+            color: var(--danger);
+            font-size: 11px;
+            font-weight: 850;
+        }
+
+        .order-items {
+            margin-top: 14px;
+            list-style: none;
+        }
+
+        .order-items li {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+
+            padding: 8px 0;
+            border-bottom: 1px dashed #e5e7eb;
+
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .order-items li:last-child {
+            border-bottom: 0;
+        }
+
+        .item-qty {
+            color: var(--primary-dark);
+        }
+
+        .special-note {
+            margin-top: 12px;
+            padding: 10px;
+
+            color: #7c2d12;
+            background: var(--warning-soft);
+            border: 1px solid #fde68a;
+            border-radius: 10px;
+
+            font-size: 11px;
+            line-height: 1.45;
+        }
+
+        .order-actions {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 8px;
+            margin-top: 13px;
+        }
+
+        .order-main-action {
+            border: 0;
+            color: #ffffff;
+            background: var(--dark);
+
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 850;
+        }
+
+        .preparing-order .order-main-action {
+            background: var(--info);
+        }
+
+        .ready-order .order-main-action {
+            background: var(--success);
+        }
+
+        .ingredients-button {
+            border: 1px solid var(--border);
+            background: #ffffff;
+
+            padding: 9px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .stock-panel {
+            padding: 16px;
+            background: #17191d;
+            border: 1px solid #2c3035;
+            border-radius: 18px;
+        }
+
+        .stock-panel h3 {
+            font-size: 15px;
+        }
+
+        .stock-panel > p {
+            margin-top: 5px;
+            color: #9ca3af;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .stock-list {
+            margin-top: 18px;
+        }
+
+        .stock-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+
+            padding: 13px 0;
+            border-bottom: 1px solid #292d31;
+        }
+
+        .stock-row:last-child {
+            border-bottom: 0;
+        }
+
+        .stock-row strong {
+            display: block;
+            font-size: 12px;
+        }
+
+        .stock-row span {
+            color: #9ca3af;
+            font-size: 10px;
+        }
+
+        .stock-toggle {
+            position: relative;
+            width: 42px;
+            height: 23px;
+            flex: 0 0 auto;
+
+            border: 0;
+            border-radius: 999px;
+            background: var(--success);
+        }
+
+        .stock-toggle::after {
+            content: "";
+
+            position: absolute;
+            top: 3px;
+            right: 3px;
+
+            width: 17px;
+            height: 17px;
+
+            border-radius: 50%;
+            background: #ffffff;
+            transition: 0.2s ease;
+        }
+
+        .stock-toggle.sold-out {
+            background: var(--danger);
+        }
+
+        .stock-toggle.sold-out::after {
+            right: 22px;
+        }
+
+        .voice-stock-button {
+            width: 100%;
+            margin-top: 18px;
+
+            border: 1px solid #3f3f46;
+            color: #ffffff;
+            background: #23262a;
+
+            padding: 12px;
+            border-radius: 12px;
+        }
+
+        /* =====================================================
+           ADMIN PANEL
+        ===================================================== */
+
+        .admin-screen {
+            min-height: calc(100vh - 71px);
+            background: #f5f7fa;
+        }
+
+        .admin-layout {
+            display: grid;
+            grid-template-columns: 245px 1fr;
+            min-height: calc(100vh - 71px);
+        }
+
+        .admin-sidebar {
+            display: flex;
+            flex-direction: column;
+
+            padding: 22px 16px;
+            color: #ffffff;
+            background: #171717;
+        }
+
+        .admin-logo {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+
+            padding: 0 8px 24px;
+            border-bottom: 1px solid #333333;
+        }
+
+        .admin-logo-icon {
+            width: 39px;
+            height: 39px;
+
+            display: grid;
+            place-items: center;
+
+            background: var(--primary);
+            border-radius: 12px;
+        }
+
+        .admin-logo h2 {
+            font-size: 15px;
+        }
+
+        .admin-logo p {
+            margin-top: 3px;
+            color: #a3a3a3;
+            font-size: 10px;
+        }
+
+        .admin-menu {
+            display: grid;
+            gap: 7px;
+            margin-top: 22px;
+        }
+
+        .admin-menu-button {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+
+            border: 0;
+            color: #c4c4c4;
+            background: transparent;
+
+            padding: 12px;
+            border-radius: 11px;
+            text-align: left;
+        }
+
+        .admin-menu-button:hover,
+        .admin-menu-button.active {
+            color: #ffffff;
+            background: #2a2a2a;
+        }
+
+        .admin-menu-button.active {
+            border-left: 3px solid var(--primary);
+        }
+
+        .admin-profile {
+            margin-top: auto;
+
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            padding: 13px 8px 0;
+            border-top: 1px solid #333333;
+        }
+
+        .profile-avatar {
+            width: 36px;
+            height: 36px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 50%;
+            background: #404040;
+        }
+
+        .admin-profile strong {
+            display: block;
+            font-size: 12px;
+        }
+
+        .admin-profile span {
+            color: #a3a3a3;
+            font-size: 10px;
+        }
+
+        .admin-main {
+            padding: 26px;
+            overflow-x: hidden;
+        }
+
+        .admin-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+        }
+
+        .admin-heading h1 {
+            font-size: 25px;
+        }
+
+        .admin-heading p {
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 9px;
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-top: 22px;
+        }
+
+        .admin-stat {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+
+            padding: 18px;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .admin-stat-icon {
+            width: 45px;
+            height: 45px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 13px;
+            background: var(--primary-soft);
+            font-size: 20px;
+        }
+
+        .admin-stat span {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .admin-stat strong {
+            display: block;
+            margin-top: 4px;
+            font-size: 20px;
+        }
+
+        .admin-content-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.85fr);
+            gap: 16px;
+            margin-top: 18px;
+        }
+
+        .admin-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .admin-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+
+            padding: 18px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .admin-card-header h3 {
+            font-size: 15px;
+        }
+
+        .admin-card-header p {
+            margin-top: 4px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .admin-card-body {
+            padding: 18px;
+        }
+
+        .chart-placeholder {
+            height: 240px;
+
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 9px;
+
+            padding: 20px 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .chart-bar-group {
+            flex: 1;
+            text-align: center;
+        }
+
+        .chart-bar {
+            width: 100%;
+            max-width: 48px;
+            margin: auto;
+
+            border-radius: 8px 8px 0 0;
+            background: linear-gradient(to top, var(--primary-dark), #fdba74);
+        }
+
+        .chart-bar-group span {
+            display: block;
+            margin-top: 9px;
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .top-dish-list {
+            display: grid;
+            gap: 11px;
+        }
+
+        .top-dish {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            padding-bottom: 11px;
+            border-bottom: 1px solid #f0f1f3;
+        }
+
+        .top-dish:last-child {
+            border-bottom: 0;
+        }
+
+        .top-dish img {
+            width: 48px;
+            height: 48px;
+
+            object-fit: cover;
+            border-radius: 11px;
+        }
+
+        .top-dish-copy {
+            flex: 1;
+        }
+
+        .top-dish-copy strong {
+            display: block;
+            font-size: 12px;
+        }
+
+        .top-dish-copy span {
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .top-dish-price {
+            font-size: 12px;
+            font-weight: 850;
+        }
+
+        /* Admin AI page */
+
+        .admin-subpage {
+            display: none;
+        }
+
+        .admin-subpage.active {
+            display: block;
+        }
+
+        .ai-config-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 320px;
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .field-group {
+            margin-bottom: 16px;
+        }
+
+        .field-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .field-control {
+            width: 100%;
+            border: 1px solid var(--border);
+            outline: 0;
+
+            padding: 12px;
+            background: #ffffff;
+            border-radius: 11px;
+        }
+
+        .field-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.12);
+        }
+
+        textarea.field-control {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .rule-panel {
+            margin-top: 16px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .rule-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 13px 14px;
+            background: #f8fafc;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .rule-panel-header strong {
+            font-size: 12px;
+        }
+
+        .add-rule-button {
+            border: 0;
+            color: var(--primary-dark);
+            background: transparent;
+            font-size: 11px;
+            font-weight: 850;
+        }
+
+        .rule-list {
+            padding: 10px 14px;
+        }
+
+        .rule-row {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f1f3;
+        }
+
+        .rule-row:last-child {
+            border-bottom: 0;
+        }
+
+        .rule-icon {
+            width: 27px;
+            height: 27px;
+            flex: 0 0 auto;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 8px;
+            font-size: 12px;
+        }
+
+        .do-icon {
+            color: #166534;
+            background: var(--success-soft);
+        }
+
+        .dont-icon {
+            color: #991b1b;
+            background: var(--danger-soft);
+        }
+
+        .rule-row input {
+            flex: 1;
+            border: 0;
+            outline: 0;
+            font-size: 11px;
+        }
+
+        .remove-rule-button {
+            border: 0;
+            color: var(--danger);
+            background: transparent;
+        }
+
+        .publish-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 18px;
+        }
+
+        .ai-preview {
+            padding: 18px;
+            color: #ffffff;
+            background: #171717;
+            border-radius: 17px;
+        }
+
+        .ai-preview h3 {
+            font-size: 15px;
+        }
+
+        .ai-preview > p {
+            margin-top: 6px;
+            color: #a3a3a3;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .preview-chat {
+            margin-top: 18px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .chat-message {
+            max-width: 90%;
+            padding: 11px 13px;
+            border-radius: 13px;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .chat-customer {
+            justify-self: end;
+            background: #363636;
+        }
+
+        .chat-agent {
+            background: var(--primary);
+        }
+
+        .preview-status {
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid #333333;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            font-size: 10px;
+            color: #a3a3a3;
+        }
+
+        /* =====================================================
+           CART DRAWER
+        ===================================================== */
+
+        .overlay {
+            position: fixed;
+            z-index: 2000;
+            inset: 0;
+
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.56);
+        }
+
+        .drawer {
+            width: min(100%, 480px);
+            max-height: 85vh;
+
+            overflow-y: auto;
+            background: #ffffff;
+            border-radius: 24px 24px 16px 16px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .drawer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .close-button {
+            width: 36px;
+            height: 36px;
+
+            border: 0;
+            border-radius: 10px;
+            background: #f3f4f6;
+        }
+
+        .drawer-body {
+            padding: 18px 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .cart-item img {
+            width: 57px;
+            height: 57px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        .cart-item-copy {
+            flex: 1;
+        }
+
+        .cart-item-copy strong {
+            display: block;
+            font-size: 13px;
+        }
+
+        .cart-item-copy span {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .bill-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 7px 0;
+            font-size: 12px;
+        }
+
+        .bill-total {
+            margin-top: 8px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+
+            font-size: 15px;
+            font-weight: 900;
+        }
+
+        .pay-button {
+            width: 100%;
+            margin-top: 16px;
+
+            border: 0;
+            color: #ffffff;
+            background: var(--success);
+
+            padding: 14px;
+            border-radius: 13px;
+            font-weight: 850;
+        }
+
+        /* =====================================================
+           MODAL AND TOAST
+        ===================================================== */
+
+        .modal-center {
+            position: fixed;
+            z-index: 2500;
+            inset: 0;
+
+            display: grid;
+            place-items: center;
+
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.62);
+        }
+
+        .modal-card {
+            width: min(100%, 480px);
+
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 18px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-content {
+            padding: 18px;
+        }
+
+        .ingredient-list {
+            margin-top: 15px;
+            display: grid;
+            gap: 9px;
+        }
+
+        .ingredient-row {
+            display: flex;
+            justify-content: space-between;
+
+            padding: 11px 12px;
+            background: #f8fafc;
+            border-radius: 10px;
+
+            font-size: 12px;
+        }
+
+        .toast {
+            position: fixed;
+            z-index: 4000;
+            right: 22px;
+            bottom: 22px;
+
+            max-width: 340px;
+            padding: 14px 17px;
+
+            color: #ffffff;
+            background: #171717;
+            border-radius: 13px;
+            box-shadow: var(--shadow-lg);
+
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 1024px) {
+            .kds-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .stock-panel {
+                order: -1;
+            }
+
+            .stock-list {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0 18px;
+            }
+
+            .admin-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .admin-content-grid,
+            .ai-config-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .demo-navigation {
+                flex-wrap: wrap;
+                padding: 12px;
+            }
+
+            .demo-brand {
+                min-width: 0;
+            }
+
+            .demo-brand p,
+            .demo-status {
+                display: none;
+            }
+
+            .screen-tabs {
+                order: 3;
+                width: 100%;
+                overflow-x: auto;
+                justify-content: flex-start;
+            }
+
+            .screen-tab {
+                flex: 0 0 auto;
+                padding: 9px 13px;
+                font-size: 12px;
+            }
+
+            .customer-background {
+                padding: 0;
+            }
+
+            .phone-frame {
+                width: 100%;
+                min-height: calc(100vh - 118px);
+
+                border: 0;
+                border-radius: 0;
+            }
+
+            .phone-notch {
+                display: none;
+            }
+
+            .customer-content {
+                height: calc(100vh - 118px);
+            }
+
+            .customer-header {
+                padding-top: 16px;
+            }
+
+            .kds-header,
+            .kds-stats,
+            .kds-layout {
+                padding-left: 14px;
+                padding-right: 14px;
+            }
+
+            .kds-header {
+                align-items: flex-start;
+            }
+
+            .kds-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .kanban-board {
+                grid-template-columns: repeat(3, 285px);
+            }
+
+            .stock-list {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-sidebar {
+                padding: 12px;
+            }
+
+            .admin-logo,
+            .admin-profile {
+                display: none;
+            }
+
+            .admin-menu {
+                margin: 0;
+                display: flex;
+                overflow-x: auto;
+            }
+
+            .admin-menu-button {
+                flex: 0 0 auto;
+            }
+
+            .admin-main {
+                padding: 16px;
+            }
+
+            .admin-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .admin-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =====================================================
+         GLOBAL SCREEN NAVIGATION
+    ====================================================== -->
+
+    <nav class="demo-navigation">
+        <div class="demo-brand">
+            <div class="demo-logo">🍽️</div>
+
+            <div>
+                <h1>Kitchen AI</h1>
+                <p>Autonomous Restaurant OS</p>
+            </div>
+        </div>
+
+        <div class="screen-tabs">
+            <button
+                class="screen-tab active"
+                data-target="customerScreen"
+            >
+                📱 Customer App
+            </button>
+
+            <button
+                class="screen-tab"
+                data-target="kdsScreen"
+            >
+                👨‍🍳 Kitchen KDS
+            </button>
+
+            <button
+                class="screen-tab"
+                data-target="adminScreen"
+            >
+                ⚙️ Admin Panel
+            </button>
+        </div>
+
+        <div class="demo-status">
+            <span class="live-dot"></span>
+            Demo System Live
+        </div>
+    </nav>
+
+    <!-- =====================================================
+         SCREEN 1: CUSTOMER MOBILE APP
+    ====================================================== -->
+
+    <section id="customerScreen" class="app-screen">
+        <div class="customer-background">
+
+            <div class="phone-frame">
+                <div class="phone-notch"></div>
+
+                <div class="customer-content">
+
+                    <header class="customer-header">
+                        <div class="restaurant-line">
+                            <div class="restaurant-info">
+                                <div class="restaurant-icon">🍛</div>
+
+                                <div>
+                                    <h2>Spice Route Kitchen</h2>
+                                    <p>Smart dining powered by AI</p>
+                                </div>
+                            </div>
+
+                            <div class="table-badge">
+                                <strong>Table #05</strong>
+                                <span>● Dine-In</span>
+                            </div>
+                        </div>
+
+                        <div class="search-row">
+                            <div class="search-box">
+                                <span>🔍</span>
+
+                                <input
+                                    id="menuSearch"
+                                    type="text"
+                                    placeholder="Search dishes..."
+                                >
+                            </div>
+
+                            <button
+                                class="voice-search-button"
+                                onclick="startVoiceDemo()"
+                                title="Ask AI Captain"
+                            >
+                                🎙️
+                            </button>
+                        </div>
+                    </header>
+
+                    <div class="category-strip">
+                        <button class="category-chip active" data-category="all">
+                            🌟 Popular
+                        </button>
+
+                        <button class="category-chip" data-category="starter">
+                            🍢 Starters
+                        </button>
+
+                        <button class="category-chip" data-category="main">
+                            🥘 Main Course
+                        </button>
+
+                        <button class="category-chip" data-category="bread">
+                            🫓 Breads
+                        </button>
+
+                        <button class="category-chip" data-category="drink">
+                            🥤 Mocktails
+                        </button>
+
+                        <button class="category-chip" data-category="dessert">
+                            🍨 Desserts
+                        </button>
+                    </div>
+
+                    <section class="ai-hero">
+                        <div class="ai-label">
+                            <span>✨</span>
+                            AI Captain
+                        </div>
+
+                        <h3>Not sure what to order?</h3>
+
+                        <p>
+                            Tell me your budget, taste and group size.
+                            I will create the perfect meal for you.
+                        </p>
+
+                        <button
+                            class="ai-prompt-button"
+                            onclick="showAISuggestion()"
+                        >
+                            🎙️ “2 people, crispy starter and less spicy”
+                        </button>
+                    </section>
+
+                    <main class="menu-section">
+                        <div class="section-title">
+                            <h3>Popular near your table</h3>
+                            <button onclick="resetMenuFilters()">View All</button>
+                        </div>
+
+                        <div id="foodGrid" class="food-grid">
+
+                            <article
+                                class="food-card"
+                                data-name="paneer tikka"
+                                data-category="starter"
+                            >
+                                <div class="food-image">
+                                    <img
+                                        src="https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=700&q=85"
+                                        alt="Paneer Tikka"
+                                    >
+
+                                    <span class="food-rating">★ 4.8</span>
+                                </div>
+
+                                <div class="food-card-body">
+                                    <div class="food-name-line">
+                                        <h4>Smoky Paneer Tikka</h4>
+                                        <span class="veg-icon"></span>
+                                    </div>
+
+                                    <p class="food-description">
+                                        Tandoor-grilled paneer with mint chutney.
+                                    </p>
+
+                                    <div class="food-meta">
+                                        <span class="food-price">₹249</span>
+                                        <span class="spice">🌶️🌶️</span>
+                                    </div>
+
+                                    <div class="food-actions">
+                                        <button
+                                            class="customize-button"
+                                            onclick="customizeItem('Smoky Paneer Tikka')"
+                                        >
+                                            Customize
+                                        </button>
+
+                                        <button
+                                            class="add-button"
+                                            onclick="addItem(this, 'Smoky Paneer Tikka', 249)"
+                                        >
+                                            + ADD
+                                        </button>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <article
+                                class="food-card"
+                                data-name="chilli paneer"
+                                data-category="starter"
+                            >
+                                <div class="food-image">
+                                    <img
+                                        src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=700&q=85"
+                                        alt="Chilli Paneer"
+                                    >
+
+                                    <span class="food-rating">★ 4.7</span>
+                                </div>
+
+                                <div class="food-card-body">
+                                    <div class="food-name-line">
+                                        <h4>Crispy Chilli Paneer</h4>
+                                        <span class="veg-icon"></span>
+                                    </div>
+
+                                    <p class="food-description">
+                                        Crispy paneer tossed with peppers and sauce.
+                                    </p>
+
+                                    <div class="food-meta">
+                                        <span class="food-price">₹229</span>
+                                        <span class="spice">🌶️🌶️🌶️</span>
+                                    </div>
+
+                                    <div class="food-actions">
+                                        <button
+                                            class="customize-button"
+                                            onclick="customizeItem('Crispy Chilli Paneer')"
+                                        >
+                                            Customize
+                                        </button>
+
+                                        <button
+                                            class="add-button"
+                                            onclick="addItem(this, 'Crispy Chilli Paneer', 229)"
+                                        >
+                                            + ADD
+                                        </button>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <article
+                                class="food-card"
+                                data-name="paneer butter masala"
+                                data-category="main"
+                            >
+                                <div class="food-image">
+                                    <img
+                                        src="https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=700&q=85"
+                                        alt="Paneer Butter Masala"
+                                    >
+
+                                    <span class="food-rating">★ 4.9</span>
+                                </div>
+
+                                <div class="food-card-body">
+                                    <div class="food-name-line">
+                                        <h4>Paneer Butter Masala</h4>
+                                        <span class="veg-icon"></span>
+                                    </div>
+
+                                    <p class="food-description">
+                                        Paneer in creamy tomato and cashew gravy.
+                                    </p>
+
+                                    <div class="food-meta">
+                                        <span class="food-price">₹289</span>
+                                        <span class="spice">🌶️</span>
+                                    </div>
+
+                                    <div class="food-actions">
+                                        <button
+                                            class="customize-button"
+                                            onclick="customizeItem('Paneer Butter Masala')"
+                                        >
+                                            Customize
+                                        </button>
+
+                                        <button
+                                            class="add-button"
+                                            onclick="addItem(this, 'Paneer Butter Masala', 289)"
+                                        >
+                                            + ADD
+                                        </button>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <article
+                                class="food-card"
+                                data-name="butter naan"
+                                data-category="bread"
+                            >
+                                <div class="food-image">
+                                    <img
+                                        src="https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?auto=format&fit=crop&w=700&q=85"
+                                        alt="Butter Naan"
+                                    >
+
+                                    <span class="food-rating">★ 4.7</span>
+                                </div>
+
+                                <div class="food-card-body">
+                                    <div class="food-name-line">
+                                        <h4>Butter Naan</h4>
+                                        <span class="veg-icon"></span>
+                                    </div>
+
+                                    <p class="food-description">
+                                        Soft tandoori bread finished with butter.
+                                    </p>
+
+                                    <div class="food-meta">
+                                        <span class="food-price">₹69</span>
+                                        <span class="spice">Mild</span>
+                                    </div>
+
+                                    <div class="food-actions">
+                                        <button
+                                            class="customize-button"
+                                            onclick="customizeItem('Butter Naan')"
+                                        >
+                                            Customize
+                                        </button>
+
+                                        <button
+                                            class="add-button"
+                                            onclick="addItem(this, 'Butter Naan', 69)"
+                                        >
+                                            + ADD
+                                        </button>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <article
+                                class="food-card"
+                                data-name="mint mojito"
+                                data-category="drink"
+                            >
+                                <div class="food-image">
+                                    <img
+                                        src="https://images.unsplash.com/photo-1551538827-9c037cb4f32a?auto=format&fit=crop&w=700&q=85"
+                                        alt="Mint Mojito"
+                                    >
+
+                                    <span class="food-rating">★ 4.6</span>
+                                </div>
+
+                                <div class="food-card-body">
+                                    <div class="food-name-line">
+                                        <h4>Fresh Mint Mojito</h4>
+                                        <span class="veg-icon"></span>
+                                    </div>
+
+                                    <p class="food-description">
+                                        Fresh mint, lime, ice and sparkling soda.
+                                    </p>
+
+                                    <div class="food-meta">
+                                        <span class="food-price">₹129</span>
+                                        <span class="spice">❄️ Cold</span>
+                                    </div>
+
+                                    <div class="food-actions">
+                                        <button
+                                            class="customize-button"
+                                            onclick="customizeItem('Fresh Mint Mojito')"
+                                        >
+                                            Customize
+                                        </button>
+
+                                        <button
+                                            class="add-button"
+                                            onclick="addItem(this, 'Fresh Mint Mojito', 129)"
+                                        >
+                                            + ADD
+                                        </button>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <article
+                                class="food-card"
+                                data-name="kulfi"
+                                data-category="dessert"
+                            >
+                                <div class="food-image">
+                                    <img
+                                        src="https://images.unsplash.com/photo-1560008581-09826d1de69e?auto=format&fit=crop&w=700&q=85"
+                                        alt="Kulfi"
+                                    >
+
+                                    <span class="food-rating">★ 4.8</span>
+                                </div>
+
+                                <div class="food-card-body">
+                                    <div class="food-name-line">
+                                        <h4>Royal Pista Kulfi</h4>
+                                        <span class="veg-icon"></span>
+                                    </div>
+
+                                    <p class="food-description">
+                                        Creamy pista kulfi with saffron and nuts.
+                                    </p>
+
+                                    <div class="food-meta">
+                                        <span class="food-price">₹149</span>
+                                        <span class="spice">❄️ Cold</span>
+                                    </div>
+
+                                    <div class="food-actions">
+                                        <button
+                                            class="customize-button"
+                                            onclick="customizeItem('Royal Pista Kulfi')"
+                                        >
+                                            Customize
+                                        </button>
+
+                                        <button
+                                            class="add-button"
+                                            onclick="addItem(this, 'Royal Pista Kulfi', 149)"
+                                        >
+                                            + ADD
+                                        </button>
+                                    </div>
+                                </div>
+                            </article>
+
+                        </div>
+                    </main>
+                </div>
+
+                <div class="ai-float-bar">
+                    <button class="ai-mic" onclick="startVoiceDemo()">🎙️</button>
+
+                    <div class="ai-float-copy">
+                        <strong>Ask AI Captain</strong>
+                        <span id="aiStatusText">
+                            “Less spicy, no onion, budget ₹500...”
+                        </span>
+                    </div>
+
+                    <span class="ai-chat-icon">💬</span>
+                </div>
+
+                <div class="cart-bar" onclick="openCart()">
+                    <div class="cart-summary">
+                        <strong id="cartItemCount">0 Items</strong>
+                        <span id="cartTotal">₹0</span>
+                    </div>
+
+                    <button>View Cart / Pay →</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================
+         SCREEN 2: KITCHEN KDS
+    ====================================================== -->
+
+    <section id="kdsScreen" class="app-screen hidden">
+        <div class="kds-screen">
+
+            <header class="kds-header">
+                <div class="kds-title">
+                    <h2>Kitchen Display System</h2>
+                    <p>Live orders, preparation workflow and inventory</p>
+                </div>
+
+                <div class="kds-header-actions">
+                    <button class="dark-button" onclick="toggleKitchenVoice(this)">
+                        🔊 Voice ON
+                    </button>
+
+                    <button class="dark-button">
+                        Full Screen ⛶
+                    </button>
+                </div>
+            </header>
+
+            <div class="kds-stats">
+                <div class="kds-stat">
+                    <span>Active Orders</span>
+                    <strong>08</strong>
+                </div>
+
+                <div class="kds-stat">
+                    <span>Pending Items</span>
+                    <strong>17</strong>
+                </div>
+
+                <div class="kds-stat">
+                    <span>Average Prep</span>
+                    <strong>12m</strong>
+                </div>
+
+                <div class="kds-stat">
+                    <span>Completed Today</span>
+                    <strong>126</strong>
+                </div>
+            </div>
+
+            <div class="kds-layout">
+
+                <div class="kanban-board">
+
+                    <section class="kanban-column">
+                        <div class="kanban-heading">
+                            <h3>🔴 New / Paid</h3>
+                            <span class="kanban-count">2</span>
+                        </div>
+
+                        <article class="order-card new-order">
+                            <div class="order-card-header">
+                                <div>
+                                    <div class="order-number">#ORD-105</div>
+                                    <div class="order-table">
+                                        Table #05 · Paid via UPI
+                                    </div>
+                                </div>
+
+                                <div class="order-timer">
+                                    Just now<br>00:35
+                                </div>
+                            </div>
+
+                            <ul class="order-items">
+                                <li>
+                                    <span>Paneer Butter Masala</span>
+                                    <span class="item-qty">1×</span>
+                                </li>
+
+                                <li>
+                                    <span>Butter Naan</span>
+                                    <span class="item-qty">2×</span>
+                                </li>
+
+                                <li>
+                                    <span>Mint Mojito</span>
+                                    <span class="item-qty">1×</span>
+                                </li>
+                            </ul>
+
+                            <div class="special-note">
+                                ⚠️ <strong>Special note:</strong>
+                                Less spicy, no onion and use less oil.
+                            </div>
+
+                            <div class="order-actions">
+                                <button
+                                    class="order-main-action"
+                                    onclick="moveOrder(this, 'preparing')"
+                                >
+                                    Start Preparing →
+                                </button>
+
+                                <button
+                                    class="ingredients-button"
+                                    onclick="openIngredients('Paneer Butter Masala')"
+                                    title="View ingredients"
+                                >
+                                    📋
+                                </button>
+                            </div>
+                        </article>
+
+                        <article class="order-card new-order">
+                            <div class="order-card-header">
+                                <div>
+                                    <div class="order-number">#ORD-106</div>
+                                    <div class="order-table">
+                                        Table #08 · Paid via UPI
+                                    </div>
+                                </div>
+
+                                <div class="order-timer">
+                                    02 min<br>02:18
+                                </div>
+                            </div>
+
+                            <ul class="order-items">
+                                <li>
+                                    <span>Crispy Chilli Paneer</span>
+                                    <span class="item-qty">2×</span>
+                                </li>
+
+                                <li>
+                                    <span>Veg Fried Rice</span>
+                                    <span class="item-qty">1×</span>
+                                </li>
+                            </ul>
+
+                            <div class="special-note">
+                                ⚠️ <strong>Special note:</strong>
+                                Extra crispy and sauce on the side.
+                            </div>
+
+                            <div class="order-actions">
+                                <button
+                                    class="order-main-action"
+                                    onclick="moveOrder(this, 'preparing')"
+                                >
+                                    Start Preparing →
+                                </button>
+
+                                <button
+                                    class="ingredients-button"
+                                    onclick="openIngredients('Crispy Chilli Paneer')"
+                                >
+                                    📋
+                                </button>
+                            </div>
+                        </article>
+                    </section>
+
+                    <section class="kanban-column">
+                        <div class="kanban-heading">
+                            <h3>🔵 Preparing</h3>
+                            <span class="kanban-count">2</span>
+                        </div>
+
+                        <article class="order-card preparing-order">
+                            <div class="order-card-header">
+                                <div>
+                                    <div class="order-number">#ORD-102</div>
+                                    <div class="order-table">
+                                        Table #03 · In kitchen
+                                    </div>
+                                </div>
+
+                                <div class="order-timer">
+                                    Preparing<br>08:20
+                                </div>
+                            </div>
+
+                            <ul class="order-items">
+                                <li>
+                                    <span>Dal Makhani</span>
+                                    <span class="item-qty">1×</span>
+                                </li>
+
+                                <li>
+                                    <span>Butter Naan</span>
+                                    <span class="item-qty">3×</span>
+                                </li>
+                            </ul>
+
+                            <div class="order-actions">
+                                <button
+                                    class="order-main-action"
+                                    onclick="moveOrder(this, 'ready')"
+                                >
+                                    Mark Ready 🔔
+                                </button>
+
+                                <button
+                                    class="ingredients-button"
+                                    onclick="openIngredients('Dal Makhani')"
+                                >
+                                    📋
+                                </button>
+                            </div>
+                        </article>
+
+                        <article class="order-card preparing-order">
+                            <div class="order-card-header">
+                                <div>
+                                    <div class="order-number">#ORD-103</div>
+                                    <div class="order-table">
+                                        Table #12 · In kitchen
+                                    </div>
+                                </div>
+
+                                <div class="order-timer">
+                                    Preparing<br>11:45
+                                </div>
+                            </div>
+
+                            <ul class="order-items">
+                                <li>
+                                    <span>Paneer Tikka</span>
+                                    <span class="item-qty">1×</span>
+                                </li>
+
+                                <li>
+                                    <span>Jeera Rice</span>
+                                    <span class="item-qty">1×</span>
+                                </li>
+                            </ul>
+
+                            <div class="order-actions">
+                                <button
+                                    class="order-main-action"
+                                    onclick="moveOrder(this, 'ready')"
+                                >
+                                    Mark Ready 🔔
+                                </button>
+
+                                <button
+                                    class="ingredients-button"
+                                    onclick="openIngredients('Paneer Tikka')"
+                                >
+                                    📋
+                                </button>
+                            </div>
+                        </article>
+                    </section>
+
+                    <section class="kanban-column">
+                        <div class="kanban-heading">
+                            <h3>🟢 Ready / Serve</h3>
+                            <span class="kanban-count">2</span>
+                        </div>
+
+                        <article class="order-card ready-order">
+                            <div class="order-card-header">
+                                <div>
+                                    <div class="order-number">#ORD-098</div>
+                                    <div class="order-table">
+                                        Table #09 · Ready
+                                    </div>
+                                </div>
+
+                                <div class="order-timer" style="color: #16a34a;">
+                                    Ready<br>01:10
+                                </div>
+                            </div>
+
+                            <ul class="order-items">
+                                <li>
+                                    <span>Veg Biryani</span>
+                                    <span class="item-qty">2×</span>
+                                </li>
+
+                                <li>
+                                    <span>Raita</span>
+                                    <span class="item-qty">1×</span>
+                                </li>
+                            </ul>
+
+                            <div class="order-actions">
+                                <button
+                                    class="order-main-action"
+                                    onclick="serveOrder(this)"
+                                >
+                                    Mark Served ✓
+                                </button>
+
+                                <button class="ingredients-button">🔔</button>
+                            </div>
+                        </article>
+
+                        <article class="order-card ready-order">
+                            <div class="order-card-header">
+                                <div>
+                                    <div class="order-number">#ORD-100</div>
+                                    <div class="order-table">
+                                        Table #02 · Ready
+                                    </div>
+                                </div>
+
+                                <div class="order-timer" style="color: #16a34a;">
+                                    Ready<br>00:40
+                                </div>
+                            </div>
+
+                            <ul class="order-items">
+                                <li>
+                                    <span>Masala Dosa</span>
+                                    <span class="item-qty">2×</span>
+                                </li>
+                            </ul>
+
+                            <div class="order-actions">
+                                <button
+                                    class="order-main-action"
+                                    onclick="serveOrder(this)"
+                                >
+                                    Mark Served ✓
+                                </button>
+
+                                <button class="ingredients-button">🔔</button>
+                            </div>
+                        </article>
+                    </section>
+
+                </div>
+
+                <aside class="stock-panel">
+                    <h3>Quick Stock Manager</h3>
+
+                    <p>
+                        Instantly hide unavailable dishes from the customer menu.
+                    </p>
+
+                    <div class="stock-list">
+
+                        <div class="stock-row">
+                            <div>
+                                <strong>Paneer Tikka</strong>
+                                <span>Available</span>
+                            </div>
+
+                            <button
+                                class="stock-toggle"
+                                onclick="toggleStock(this)"
+                            ></button>
+                        </div>
+
+                        <div class="stock-row">
+                            <div>
+                                <strong>Chilli Paneer</strong>
+                                <span>Available</span>
+                            </div>
+
+                            <button
+                                class="stock-toggle"
+                                onclick="toggleStock(this)"
+                            ></button>
+                        </div>
+
+                        <div class="stock-row">
+                            <div>
+                                <strong>Mushroom Tikka</strong>
+                                <span>Sold Out</span>
+                            </div>
+
+                            <button
+                                class="stock-toggle sold-out"
+                                onclick="toggleStock(this)"
+                            ></button>
+                        </div>
+
+                        <div class="stock-row">
+                            <div>
+                                <strong>Butter Naan</strong>
+                                <span>Available</span>
+                            </div>
+
+                            <button
+                                class="stock-toggle"
+                                onclick="toggleStock(this)"
+                            ></button>
+                        </div>
+
+                        <div class="stock-row">
+                            <div>
+                                <strong>Veg Biryani</strong>
+                                <span>Available</span>
+                            </div>
+
+                            <button
+                                class="stock-toggle"
+                                onclick="toggleStock(this)"
+                            ></button>
+                        </div>
+
+                        <div class="stock-row">
+                            <div>
+                                <strong>Pista Kulfi</strong>
+                                <span>Low Stock</span>
+                            </div>
+
+                            <button
+                                class="stock-toggle"
+                                onclick="toggleStock(this)"
+                            ></button>
+                        </div>
+                    </div>
+
+                    <button
+                        class="voice-stock-button"
+                        onclick="voiceStockDemo()"
+                    >
+                        🎙️ Update stock by voice
+                    </button>
+                </aside>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================
+         SCREEN 3: ADMIN PANEL
+    ====================================================== -->
+
+    <section id="adminScreen" class="app-screen hidden">
+        <div class="admin-screen">
+
+            <div class="admin-layout">
+
+                <aside class="admin-sidebar">
+                    <div class="admin-logo">
+                        <div class="admin-logo-icon">🍽️</div>
+
+                        <div>
+                            <h2>Kitchen AI</h2>
+                            <p>Restaurant Admin</p>
+                        </div>
+                    </div>
+
+                    <div class="admin-menu">
+                        <button
+                            class="admin-menu-button active"
+                            data-admin-page="dashboardPage"
+                        >
+                            📊 Dashboard
+                        </button>
+
+                        <button
+                            class="admin-menu-button"
+                            data-admin-page="dashboardPage"
+                        >
+                            🍛 Menu Manager
+                        </button>
+
+                        <button
+                            class="admin-menu-button"
+                            data-admin-page="dashboardPage"
+                        >
+                            🧾 Live Orders
+                        </button>
+
+                        <button
+                            class="admin-menu-button"
+                            data-admin-page="aiRulesPage"
+                        >
+                            ✨ AI Behaviour
+                        </button>
+
+                        <button
+                            class="admin-menu-button"
+                            data-admin-page="dashboardPage"
+                        >
+                            📈 Analytics
+                        </button>
+
+                        <button
+                            class="admin-menu-button"
+                            data-admin-page="dashboardPage"
+                        >
+                            ⚙️ Settings
+                        </button>
+                    </div>
+
+                    <div class="admin-profile">
+                        <div class="profile-avatar">VS</div>
+
+                        <div>
+                            <strong>Restaurant Owner</strong>
+                            <span>Super Admin</span>
+                        </div>
+                    </div>
+                </aside>
+
+                <main class="admin-main">
+
+                    <!-- DASHBOARD PAGE -->
+
+                    <div id="dashboardPage" class="admin-subpage active">
+
+                        <header class="admin-header">
+                            <div class="admin-heading">
+                                <h1>Good evening 👋</h1>
+
+                                <p>
+                                    Here is what is happening at Spice Route Kitchen.
+                                </p>
+                            </div>
+
+                            <div class="admin-actions">
+                                <button class="outline-button">
+                                    Export Report
+                                </button>
+
+                                <button class="primary-button">
+                                    + Add Menu Item
+                                </button>
+                            </div>
+                        </header>
+
+                        <section class="admin-stats">
+
+                            <article class="admin-stat">
+                                <div class="admin-stat-icon">₹</div>
+
+                                <div>
+                                    <span>Today's Revenue</span>
+                                    <strong>₹28,450</strong>
+                                </div>
+                            </article>
+
+                            <article class="admin-stat">
+                                <div class="admin-stat-icon">🧾</div>
+
+                                <div>
+                                    <span>Total Orders</span>
+                                    <strong>128</strong>
+                                </div>
+                            </article>
+
+                            <article class="admin-stat">
+                                <div class="admin-stat-icon">🔥</div>
+
+                                <div>
+                                    <span>Live Orders</span>
+                                    <strong>08</strong>
+                                </div>
+                            </article>
+
+                            <article class="admin-stat">
+                                <div class="admin-stat-icon">⏱️</div>
+
+                                <div>
+                                    <span>Average Prep Time</span>
+                                    <strong>12 min</strong>
+                                </div>
+                            </article>
+
+                        </section>
+
+                        <div class="admin-content-grid">
+
+                            <section class="admin-card">
+                                <div class="admin-card-header">
+                                    <div>
+                                        <h3>Sales by hour</h3>
+                                        <p>Today's revenue performance</p>
+                                    </div>
+
+                                    <span class="status-badge status-success">
+                                        +18.4%
+                                    </span>
+                                </div>
+
+                                <div class="admin-card-body">
+                                    <div class="chart-placeholder">
+
+                                        <div class="chart-bar-group">
+                                            <div class="chart-bar" style="height: 35%;"></div>
+                                            <span>10 AM</span>
+                                        </div>
+
+                                        <div class="chart-bar-group">
+                                            <div class="chart-bar" style="height: 58%;"></div>
+                                            <span>11 AM</span>
+                                        </div>
+
+                                        <div class="chart-bar-group">
+                                            <div class="chart-bar" style="height: 82%;"></div>
+                                            <span>12 PM</span>
+                                        </div>
+
+                                        <div class="chart-bar-group">
+                                            <div class="chart-bar" style="height: 100%;"></div>
+                                            <span>1 PM</span>
+                                        </div>
+
+                                        <div class="chart-bar-group">
+                                            <div class="chart-bar" style="height: 73%;"></div>
+                                            <span>2 PM</span>
+                                        </div>
+
+                                        <div class="chart-bar-group">
+                                            <div class="chart-bar" style="height: 45%;"></div>
+                                            <span>3 PM</span>
+                                        </div>
+
+                                        <div class="chart-bar-group">
+                                            <div class="chart-bar" style="height: 61%;"></div>
+                                            <span>4 PM</span>
+                                        </div>
+
+                                        <div class="chart-bar-group">
+                                            <div class="chart-bar" style="height: 88%;"></div>
+                                            <span>5 PM</span>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="admin-card">
+                                <div class="admin-card-header">
+                                    <div>
+                                        <h3>Best-selling dishes</h3>
+                                        <p>Top items from today's orders</p>
+                                    </div>
+                                </div>
+
+                                <div class="admin-card-body">
+                                    <div class="top-dish-list">
+
+                                        <div class="top-dish">
+                                            <img
+                                                src="https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=200&q=80"
+                                                alt=""
+                                            >
+
+                                            <div class="top-dish-copy">
+                                                <strong>Paneer Butter Masala</strong>
+                                                <span>42 orders</span>
+                                            </div>
+
+                                            <div class="top-dish-price">
+                                                ₹12,138
+                                            </div>
+                                        </div>
+
+                                        <div class="top-dish">
+                                            <img
+                                                src="https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=200&q=80"
+                                                alt=""
+                                            >
+
+                                            <div class="top-dish-copy">
+                                                <strong>Paneer Tikka</strong>
+                                                <span>38 orders</span>
+                                            </div>
+
+                                            <div class="top-dish-price">
+                                                ₹9,462
+                                            </div>
+                                        </div>
+
+                                        <div class="top-dish">
+                                            <img
+                                                src="https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?auto=format&fit=crop&w=200&q=80"
+                                                alt=""
+                                            >
+
+                                            <div class="top-dish-copy">
+                                                <strong>Butter Naan</strong>
+                                                <span>76 orders</span>
+                                            </div>
+
+                                            <div class="top-dish-price">
+                                                ₹5,244
+                                            </div>
+                                        </div>
+
+                                        <div class="top-dish">
+                                            <img
+                                                src="https://images.unsplash.com/photo-1551538827-9c037cb4f32a?auto=format&fit=crop&w=200&q=80"
+                                                alt=""
+                                            >
+
+                                            <div class="top-dish-copy">
+                                                <strong>Mint Mojito</strong>
+                                                <span>31 orders</span>
+                                            </div>
+
+                                            <div class="top-dish-price">
+                                                ₹3,999
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </section>
+
+                        </div>
+                    </div>
+
+                    <!-- AI RULES PAGE -->
+
+                    <div id="aiRulesPage" class="admin-subpage">
+
+                        <header class="admin-header">
+                            <div class="admin-heading">
+                                <h1>AI Behaviour Engine</h1>
+
+                                <p>
+                                    Control how the AI Captain talks, recommends
+                                    and responds without changing code.
+                                </p>
+                            </div>
+
+                            <div class="admin-actions">
+                                <span class="status-badge status-success">
+                                    ● Agent Live
+                                </span>
+                            </div>
+                        </header>
+
+                        <div class="ai-config-grid">
+
+                            <section class="admin-card">
+                                <div class="admin-card-header">
+                                    <div>
+                                        <h3>Agent configuration</h3>
+                                        <p>
+                                            Changes will apply to the next AI interaction.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="admin-card-body">
+
+                                    <div class="field-group">
+                                        <label>Target Agent</label>
+
+                                        <select class="field-control">
+                                            <option>Customer AI Captain</option>
+                                            <option>Kitchen Voice Notifier</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="field-group">
+                                        <label>Response Tone</label>
+
+                                        <select class="field-control">
+                                            <option>Casual & Energetic</option>
+                                            <option>Polite & Welcoming</option>
+                                            <option>Traditional Desi</option>
+                                            <option>Professional</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="field-group">
+                                        <label>Base Instructions</label>
+
+                                        <textarea class="field-control">You are a helpful restaurant captain. Recommend only available menu items, confirm customization notes and never create an order without customer approval.</textarea>
+                                    </div>
+
+                                    <div class="rule-panel">
+                                        <div class="rule-panel-header">
+                                            <strong>✅ Do Rules</strong>
+
+                                            <button
+                                                class="add-rule-button"
+                                                onclick="addRule('doRules', 'do')"
+                                            >
+                                                + Add Rule
+                                            </button>
+                                        </div>
+
+                                        <div id="doRules" class="rule-list">
+
+                                            <div class="rule-row">
+                                                <span class="rule-icon do-icon">✓</span>
+
+                                                <input
+                                                    type="text"
+                                                    value="Recommend Kulfi when the cart value is above ₹500."
+                                                >
+
+                                                <button
+                                                    class="remove-rule-button"
+                                                    onclick="removeRule(this)"
+                                                >
+                                                    ✕
+                                                </button>
+                                            </div>
+
+                                            <div class="rule-row">
+                                                <span class="rule-icon do-icon">✓</span>
+
+                                                <input
+                                                    type="text"
+                                                    value="Promote today's chef-special Paneer Tikka."
+                                                >
+
+                                                <button
+                                                    class="remove-rule-button"
+                                                    onclick="removeRule(this)"
+                                                >
+                                                    ✕
+                                                </button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="rule-panel">
+                                        <div class="rule-panel-header">
+                                            <strong>🚫 Don't Rules</strong>
+
+                                            <button
+                                                class="add-rule-button"
+                                                onclick="addRule('dontRules', 'dont')"
+                                            >
+                                                + Add Rule
+                                            </button>
+                                        </div>
+
+                                        <div id="dontRules" class="rule-list">
+
+                                            <div class="rule-row">
+                                                <span class="rule-icon dont-icon">!</span>
+
+                                                <input
+                                                    type="text"
+                                                    value="Never mention alcohol or outside brands."
+                                                >
+
+                                                <button
+                                                    class="remove-rule-button"
+                                                    onclick="removeRule(this)"
+                                                >
+                                                    ✕
+                                                </button>
+                                            </div>
+
+                                            <div class="rule-row">
+                                                <span class="rule-icon dont-icon">!</span>
+
+                                                <input
+                                                    type="text"
+                                                    value="Never promise unauthorized discounts or free items."
+                                                >
+
+                                                <button
+                                                    class="remove-rule-button"
+                                                    onclick="removeRule(this)"
+                                                >
+                                                    ✕
+                                                </button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="publish-row">
+                                        <button
+                                            class="primary-button"
+                                            onclick="publishAIRules()"
+                                        >
+                                            Save & Publish to AI
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </section>
+
+                            <aside class="ai-preview">
+                                <h3>Live AI Preview</h3>
+
+                                <p>
+                                    Test how the current rules affect the customer experience.
+                                </p>
+
+                                <div class="preview-chat">
+
+                                    <div class="chat-message chat-customer">
+                                        We are 2 people. Suggest something less spicy
+                                        under ₹700.
+                                    </div>
+
+                                    <div class="chat-message chat-agent">
+                                        I recommend Paneer Tikka, Butter Naan and a
+                                        fresh Mint Mojito. I will keep the Paneer Tikka
+                                        less spicy. Would you like me to add these items?
+                                    </div>
+
+                                    <div class="chat-message chat-customer">
+                                        Yes, add those.
+                                    </div>
+
+                                    <div class="chat-message chat-agent">
+                                        Done! Your items are in the cart. Please review
+                                        the order before paying.
+                                    </div>
+
+                                </div>
+
+                                <div class="preview-status">
+                                    <span>Agent: Customer Captain</span>
+                                    <span style="color: #4ade80;">● Live</span>
+                                </div>
+                            </aside>
+
+                        </div>
+                    </div>
+
+                </main>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================
+         CART DRAWER
+    ====================================================== -->
+
+    <div id="cartOverlay" class="overlay hidden">
+        <div class="drawer">
+            <div class="drawer-header">
+                <div>
+                    <h3>Your Order</h3>
+                    <small>Table #05 · Dine-In</small>
+                </div>
+
+                <button class="close-button" onclick="closeCart()">✕</button>
+            </div>
+
+            <div class="drawer-body">
+                <div id="cartItemsContainer">
+                    <p style="color: #6b7280; font-size: 13px;">
+                        Your cart is currently empty.
+                    </p>
+                </div>
+
+                <div style="margin-top: 18px;">
+                    <div class="bill-row">
+                        <span>Subtotal</span>
+                        <strong id="cartSubtotal">₹0</strong>
+                    </div>
+
+                    <div class="bill-row">
+                        <span>Taxes</span>
+                        <strong id="cartTaxes">₹0</strong>
+                    </div>
+
+                    <div class="bill-row bill-total">
+                        <span>Total</span>
+                        <strong id="cartFinalTotal">₹0</strong>
+                    </div>
+                </div>
+
+                <button class="pay-button" onclick="simulatePayment()">
+                    Pay with UPI · GPay / PhonePe / Paytm
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =====================================================
+         INGREDIENTS MODAL
+    ====================================================== -->
+
+    <div id="ingredientsModal" class="modal-center hidden">
+        <div class="modal-card">
+
+            <div class="modal-header">
+                <div>
+                    <h3 id="ingredientDishName">
+                        Paneer Butter Masala
+                    </h3>
+
+                    <small>Recipe ingredients and preparation notes</small>
+                </div>
+
+                <button
+                    class="close-button"
+                    onclick="closeIngredients()"
+                >
+                    ✕
+                </button>
+            </div>
+
+            <div class="modal-content">
+                <p style="font-size: 12px; color: #6b7280; line-height: 1.5;">
+                    Follow the standard restaurant recipe unless a customer
+                    customization note is shown on the order.
+                </p>
+
+                <div class="ingredient-list">
+                    <div class="ingredient-row">
+                        <span>Fresh Paneer</span>
+                        <strong>200g</strong>
+                    </div>
+
+                    <div class="ingredient-row">
+                        <span>Tomato Gravy</span>
+                        <strong>150ml</strong>
+                    </div>
+
+                    <div class="ingredient-row">
+                        <span>Cashew Paste</span>
+                        <strong>25g</strong>
+                    </div>
+
+                    <div class="ingredient-row">
+                        <span>Butter</span>
+                        <strong>20g</strong>
+                    </div>
+
+                    <div class="ingredient-row">
+                        <span>Fresh Cream</span>
+                        <strong>15ml</strong>
+                    </div>
+
+                    <div class="ingredient-row">
+                        <span>Kitchen Spice Mix</span>
+                        <strong>1 portion</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script>
+        const cart = [];
+
+        const screenTabs = document.querySelectorAll(".screen-tab");
+        const appScreens = document.querySelectorAll(".app-screen");
+
+        screenTabs.forEach((tab) => {
+            tab.addEventListener("click", () => {
+                const targetId = tab.dataset.target;
+
+                screenTabs.forEach((item) => {
+                    item.classList.remove("active");
+                });
+
+                appScreens.forEach((screen) => {
+                    screen.classList.add("hidden");
+                });
+
+                tab.classList.add("active");
+                document.getElementById(targetId).classList.remove("hidden");
+
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+            });
+        });
+
+        /* =====================================================
+           CUSTOMER APP
+        ===================================================== */
+
+        function addItem(button, name, price) {
+            const existingItem = cart.find((item) => item.name === name);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    name,
+                    price,
+                    quantity: 1,
+                    note: ""
+                });
+            }
+
+            renderCart();
+
+            const currentItem = cart.find((item) => item.name === name);
+
+            button.outerHTML = `
+                <div
+                    class="quantity-control"
+                    onclick="increaseFromCard('${name}', ${price}, this)"
+                >
+                    − &nbsp; ${currentItem.quantity} &nbsp; +
+                </div>
+            `;
+
+            showToast(`${name} added to your cart.`);
+        }
+
+        function increaseFromCard(name, price, controlElement) {
+            const existingItem = cart.find((item) => item.name === name);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    name,
+                    price,
+                    quantity: 1,
+                    note: ""
+                });
+            }
+
+            const item = cart.find((cartItem) => cartItem.name === name);
+
+            controlElement.innerHTML = `− &nbsp; ${item.quantity} &nbsp; +`;
+
+            renderCart();
+        }
+
+        function renderCart() {
+            const totalQuantity = cart.reduce(
+                (sum, item) => sum + item.quantity,
+                0
+            );
+
+            const subtotal = cart.reduce(
+                (sum, item) => sum + (item.price * item.quantity),
+                0
+            );
+
+            const taxes = Math.round(subtotal * 0.05);
+            const total = subtotal + taxes;
+
+            document.getElementById("cartItemCount").textContent =
+                `${totalQuantity} Item${totalQuantity === 1 ? "" : "s"}`;
+
+            document.getElementById("cartTotal").textContent =
+                `₹${total}`;
+
+            document.getElementById("cartSubtotal").textContent =
+                `₹${subtotal}`;
+
+            document.getElementById("cartTaxes").textContent =
+                `₹${taxes}`;
+
+            document.getElementById("cartFinalTotal").textContent =
+                `₹${total}`;
+
+            const container = document.getElementById("cartItemsContainer");
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <p style="color: #6b7280; font-size: 13px;">
+                        Your cart is currently empty.
+                    </p>
+                `;
+
+                return;
+            }
+
+            container.innerHTML = cart.map((item) => `
+                <div class="cart-item">
+                    <div
+                        style="
+                            width: 57px;
+                            height: 57px;
+                            display: grid;
+                            place-items: center;
+                            border-radius: 12px;
+                            background: #fff7ed;
+                            font-size: 24px;
+                        "
+                    >
+                        🍛
+                    </div>
+
+                    <div class="cart-item-copy">
+                        <strong>${item.name}</strong>
+                        <span>₹${item.price} × ${item.quantity}</span>
+                    </div>
+
+                    <strong>₹${item.price * item.quantity}</strong>
+                </div>
+            `).join("");
+        }
+
+        function openCart() {
+            document.getElementById("cartOverlay").classList.remove("hidden");
+            renderCart();
+        }
+
+        function closeCart() {
+            document.getElementById("cartOverlay").classList.add("hidden");
+        }
+
+        function customizeItem(name) {
+            const note = window.prompt(
+                `Add special instructions for ${name}:`,
+                "Less spicy, no onion"
+            );
+
+            if (note === null) return;
+
+            let item = cart.find((cartItem) => cartItem.name === name);
+
+            if (!item) {
+                item = {
+                    name,
+                    price: 0,
+                    quantity: 0,
+                    note
+                };
+            } else {
+                item.note = note;
+            }
+
+            showToast(`Customization saved: ${note}`);
+        }
+
+        function simulatePayment() {
+            const totalItems = cart.reduce(
+                (sum, item) => sum + item.quantity,
+                0
+            );
+
+            if (totalItems === 0) {
+                showToast("Please add at least one item before payment.");
+                return;
+            }
+
+            closeCart();
+
+            showToast(
+                "Demo payment successful. Order #ORD-107 sent to the kitchen."
+            );
+        }
+
+        function startVoiceDemo() {
+            const status = document.getElementById("aiStatusText");
+
+            status.textContent = "Listening... Speak your requirement.";
+
+            setTimeout(() => {
+                status.textContent =
+                    "AI understood: 2 people, less spicy, budget ₹700.";
+
+                showToast(
+                    "AI Captain found Paneer Tikka, Butter Naan and Mint Mojito."
+                );
+            }, 1300);
+        }
+
+        function showAISuggestion() {
+            const cards = document.querySelectorAll(".food-card");
+
+            cards.forEach((card) => {
+                card.style.outline = "none";
+            });
+
+            const recommendedNames = [
+                "paneer tikka",
+                "butter naan",
+                "mint mojito"
+            ];
+
+            cards.forEach((card) => {
+                if (
+                    recommendedNames.includes(
+                        card.dataset.name.toLowerCase()
+                    )
+                ) {
+                    card.style.outline = "3px solid #f97316";
+                    card.style.outlineOffset = "2px";
+                }
+            });
+
+            showToast(
+                "AI Captain highlighted a complete meal for 2 people."
+            );
+        }
+
+        const menuSearch = document.getElementById("menuSearch");
+
+        menuSearch.addEventListener("input", () => {
+            const query = menuSearch.value.trim().toLowerCase();
+            const cards = document.querySelectorAll(".food-card");
+
+            cards.forEach((card) => {
+                const name = card.dataset.name.toLowerCase();
+
+                card.style.display =
+                    name.includes(query) ? "block" : "none";
+            });
+        });
+
+        const categoryChips =
+            document.querySelectorAll(".category-chip");
+
+        categoryChips.forEach((chip) => {
+            chip.addEventListener("click", () => {
+                categoryChips.forEach((item) => {
+                    item.classList.remove("active");
+                });
+
+                chip.classList.add("active");
+
+                const selectedCategory = chip.dataset.category;
+                const cards = document.querySelectorAll(".food-card");
+
+                cards.forEach((card) => {
+                    const cardCategory = card.dataset.category;
+
+                    card.style.display =
+                        selectedCategory === "all" ||
+                        selectedCategory === cardCategory
+                            ? "block"
+                            : "none";
+                });
+            });
+        });
+
+        function resetMenuFilters() {
+            menuSearch.value = "";
+
+            categoryChips.forEach((chip, index) => {
+                chip.classList.toggle("active", index === 0);
+            });
+
+            document.querySelectorAll(".food-card").forEach((card) => {
+                card.style.display = "block";
+                card.style.outline = "none";
+            });
+        }
+
+        /* =====================================================
+           KITCHEN KDS
+        ===================================================== */
+
+        function toggleKitchenVoice(button) {
+            const isOn = button.textContent.includes("ON");
+
+            button.textContent = isOn
+                ? "🔇 Voice OFF"
+                : "🔊 Voice ON";
+
+            showToast(
+                isOn
+                    ? "Kitchen voice announcements disabled."
+                    : "Kitchen voice announcements enabled."
+            );
+        }
+
+        function toggleStock(button) {
+            button.classList.toggle("sold-out");
+
+            const statusText =
+                button.parentElement.querySelector("span");
+
+            const soldOut =
+                button.classList.contains("sold-out");
+
+            statusText.textContent =
+                soldOut ? "Sold Out" : "Available";
+
+            showToast(
+                soldOut
+                    ? "Item is now hidden from the customer menu."
+                    : "Item is now available on the customer menu."
+            );
+        }
+
+        function voiceStockDemo() {
+            showToast(
+                "Voice command detected: Mushroom Tikka marked Sold Out."
+            );
+        }
+
+        function moveOrder(button, destination) {
+            const card = button.closest(".order-card");
+
+            if (destination === "preparing") {
+                card.classList.remove("new-order");
+                card.classList.add("preparing-order");
+
+                button.textContent = "Mark Ready 🔔";
+                button.setAttribute(
+                    "onclick",
+                    "moveOrder(this, 'ready')"
+                );
+
+                showToast("Order moved to Preparing.");
+                return;
+            }
+
+            if (destination === "ready") {
+                card.classList.remove("preparing-order");
+                card.classList.add("ready-order");
+
+                button.textContent = "Mark Served ✓";
+                button.setAttribute(
+                    "onclick",
+                    "serveOrder(this)"
+                );
+
+                showToast(
+                    "Order marked Ready. Customer notification triggered."
+                );
+            }
+        }
+
+        function serveOrder(button) {
+            const card = button.closest(".order-card");
+
+            card.style.opacity = "0";
+            card.style.transform = "scale(0.96)";
+            card.style.transition = "0.25s ease";
+
+            setTimeout(() => {
+                card.remove();
+            }, 250);
+
+            showToast("Order marked as Served.");
+        }
+
+        function openIngredients(dishName) {
+            document.getElementById(
+                "ingredientDishName"
+            ).textContent = dishName;
+
+            document.getElementById(
+                "ingredientsModal"
+            ).classList.remove("hidden");
+        }
+
+        function closeIngredients() {
+            document.getElementById(
+                "ingredientsModal"
+            ).classList.add("hidden");
+        }
+
+        /* =====================================================
+           ADMIN PANEL
+        ===================================================== */
+
+        const adminMenuButtons =
+            document.querySelectorAll(".admin-menu-button");
+
+        const adminSubpages =
+            document.querySelectorAll(".admin-subpage");
+
+        adminMenuButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+                const targetPage = button.dataset.adminPage;
+
+                adminMenuButtons.forEach((item) => {
+                    item.classList.remove("active");
+                });
+
+                adminSubpages.forEach((page) => {
+                    page.classList.remove("active");
+                });
+
+                button.classList.add("active");
+
+                document
+                    .getElementById(targetPage)
+                    .classList.add("active");
+            });
+        });
+
+        function addRule(containerId, type) {
+            const container = document.getElementById(containerId);
+
+            const row = document.createElement("div");
+            row.className = "rule-row";
+
+            const isDoRule = type === "do";
+
+            row.innerHTML = `
+                <span
+                    class="rule-icon ${isDoRule ? "do-icon" : "dont-icon"}"
+                >
+                    ${isDoRule ? "✓" : "!"}
+                </span>
+
+                <input
+                    type="text"
+                    placeholder="Enter a new ${isDoRule ? "Do" : "Don't"} rule"
+                >
+
+                <button
+                    class="remove-rule-button"
+                    onclick="removeRule(this)"
+                >
+                    ✕
+                </button>
+            `;
+
+            container.appendChild(row);
+            row.querySelector("input").focus();
+        }
+
+        function removeRule(button) {
+            button.closest(".rule-row").remove();
+        }
+
+        function publishAIRules() {
+            showToast(
+                "AI rules published successfully. New behaviour is now live."
+            );
+        }
+
+        /* =====================================================
+           TOAST
+        ===================================================== */
+
+        let toastTimer;
+
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+
+            toast.textContent = message;
+            toast.classList.remove("hidden");
+
+            clearTimeout(toastTimer);
+
+            toastTimer = setTimeout(() => {
+                toast.classList.add("hidden");
+            }, 3000);
+        }
+
+        /* Close overlays by clicking outside */
+
+        document.getElementById("cartOverlay").addEventListener(
+            "click",
+            function (event) {
+                if (event.target === this) {
+                    closeCart();
+                }
+            }
+        );
+
+        document.getElementById("ingredientsModal").addEventListener(
+            "click",
+            function (event) {
+                if (event.target === this) {
+                    closeIngredients();
+                }
+            }
+        );
+    </script>
+</body>
+</html>
